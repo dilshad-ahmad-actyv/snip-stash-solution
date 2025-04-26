@@ -69,6 +69,7 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const search = searchParams.get("search") || "";
     const language = searchParams.get("language") || "";
+    const tag = searchParams.get("tag") || "";
 
     const snippets = await prisma.snippet.findMany({
       where: {
@@ -86,6 +87,18 @@ export async function GET(req: Request) {
                 language: {
                   equals: language,
                   mode: "insensitive",
+                },
+              }
+            : {},
+          tag
+            ? {
+                tags: {
+                  some: {
+                    name: {
+                      equals: tag,
+                      mode: "insensitive",
+                    },
+                  },
                 },
               }
             : {},

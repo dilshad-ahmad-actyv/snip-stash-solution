@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { categorizeSnippet } from "@/lib/categorize";
 
 const LANGUAGES = [
   "JavaScript",
@@ -26,6 +27,15 @@ export default function NewSnippetForm() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [code, setCode] = useState("");
+  const [autoTags, setAutoTags] = useState<string[]>([]);
+
+  const handleCodeChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newCode = e.target.value;
+    setCode(newCode);
+    // Update automatic tags when code changes
+    setAutoTags(categorizeSnippet(newCode));
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -33,15 +43,20 @@ export default function NewSnippetForm() {
     setIsSubmitting(true);
 
     const formData = new FormData(e.currentTarget);
+    const userTags = (formData.get("tags") as string)
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter(Boolean);
+
+    // Combine user tags with auto-generated tags
+    const combinedTags = [...new Set([...userTags, ...autoTags])];
+
     const data = {
       title: formData.get("title") as string,
-      code: formData.get("code") as string,
+      code: code,
       language: formData.get("language") as string,
       description: formData.get("description") as string,
-      tags: (formData.get("tags") as string)
-        .split(",")
-        .map((tag) => tag.trim())
-        .filter(Boolean),
+      tags: combinedTags,
     };
 
     try {
@@ -97,6 +112,8 @@ export default function NewSnippetForm() {
           id="code"
           rows={8}
           required
+          value={code}
+          onChange={handleCodeChange}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm font-mono"
           placeholder="Paste your code here"
         />
@@ -152,8 +169,23 @@ export default function NewSnippetForm() {
           name="tags"
           id="tags"
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-          placeholder="Enter tags separated by commas (optional)"
+          placeholder="Enter custom tags separated by commas (optional)"
         />
+        {autoTags.length > 0 && (
+          <div className="mt-2">
+            <p className="text-sm text-gray-500">Auto-detected tags:</p>
+            <div className="mt-1 flex flex-wrap gap-2">
+              {autoTags.map((tag) => (
+                <span
+                  key={tag}
+                  className="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {error && <div className="text-red-500 text-sm text-center">{error}</div>}
