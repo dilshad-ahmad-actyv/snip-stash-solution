@@ -24,7 +24,7 @@ services:
       - db
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/snipstash
-      - NEXTAUTH_SECRET=your-production-secret-key
+      - NEXTAUTH_SECRET=MISOG09@AI_#MASAI@AI
       - NEXTAUTH_URL=http://your-public-ip:3000
     volumes:
       - .:/app
