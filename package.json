@@ -1,7 +1,8 @@
 {
   "name": "snip-stash",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
+  // Deployment configuration
   "scripts": {
     "dev": "next dev",
     "build": "prisma generate && next build",
