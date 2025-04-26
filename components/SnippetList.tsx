@@ -5,7 +5,11 @@ import { useQuery } from "@tanstack/react-query";
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vs2015 } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import debounce from "lodash/debounce";
-import { SearchIcon, CodeIcon, TagIcon } from "@heroicons/react/outline";
+import {
+  MagnifyingGlassIcon as SearchIcon,
+  CodeBracketIcon,
+  TagIcon,
+} from "@heroicons/react/24/outline";
 
 interface Snippet {
   id: string;
@@ -121,7 +125,7 @@ export default function SnippetList() {
                   onClick={() => copyToClipboard(snippet.code)}
                   className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
                 >
-                  <CodeIcon className="h-4 w-4 mr-2" />
+                  <CodeBracketIcon className="h-4 w-4 mr-2" />
                   Copy
                 </button>
               </div>
